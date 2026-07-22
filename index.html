@@ -14,10 +14,11 @@
   <meta property="og:url" content="https://yberium.github.io/Yberium-venuebrief-demo/">
   <link rel="canonical" href="https://yberium.github.io/Yberium-venuebrief-demo/">
   <link rel="icon" href="assets/yberium-pulse-mark.svg" type="image/svg+xml">
-  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="assets/yberium-pulse-mark.svg">
+  <link rel="manifest" href="site.webmanifest?v=2.0">
   <link rel="stylesheet" href="assets/yberium-pulse-fonts.css?v=1.0">
-  <link rel="stylesheet" href="assets/product-parity-demo.css?v=1.0">
-  <script src="assets/product-parity-demo.js?v=1.0" defer></script>
+  <link rel="stylesheet" href="assets/product-parity-demo.css?v=2.0">
+  <script src="assets/product-parity-demo.js?v=2.0" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#demo-stage">Skip to demo</a>
@@ -27,9 +28,9 @@
       <a class="brand" href="./" aria-label="Yberium Pulse demo home">
         <img class="brand-mark" src="assets/yberium-pulse-mark.svg" alt="">
         <span class="brand-name">Yberium <strong>Pulse</strong></span>
-        <span class="demo-badge">Interactive demo</span>
+        <span class="demo-badge" id="install-state">Interactive demo</span>
       </a>
-      <a class="header-link" href="https://yberium.github.io/venuebrief-landing/" rel="noopener">Product website <span aria-hidden="true">↗</span></a>
+      <a class="header-link" href="https://yberium.github.io/venuebrief-landing/" rel="noopener">Website <span aria-hidden="true">↗</span></a>
     </div>
   </header>
 
@@ -38,9 +39,9 @@
       <div class="command-copy">
         <p class="command-kicker">Pulse Control</p>
         <h1 id="command-title">From rota to a shift the team can run.</h1>
-        <p>Use sample data to see the real product logic: AI proposes, deterministic rules verify, safe fixes are previewed, and the manager keeps the final decision.</p>
+        <p>Use sample data to see the product logic: AI proposes, deterministic rules verify, safe fixes are previewed, and the manager keeps the final decision.</p>
       </div>
-      <div class="command-status" aria-live="polite">
+      <div class="command-status" aria-label="Current sample status">
         <div class="readiness-meter" aria-label="Current sample readiness">
           <strong id="readiness-value">Not started</strong>
           <span id="readiness-label">Choose an input method</span>
@@ -58,263 +59,75 @@
       <span data-journey="4"><i>4</i><b>Fix</b></span>
       <span data-journey="5"><i>5</i><b>Outputs</b></span>
     </nav>
+    <p class="mobile-progress" id="mobile-progress" aria-hidden="true">1 of 5 · Add rota</p>
 
-    <section class="stage-card" aria-live="polite">
+    <section class="stage-card">
       <div class="stage" data-stage="1">
         <header class="stage-head">
           <div>
             <p class="stage-eyebrow">Fast start</p>
-            <h2>How do you want to add today’s rota?</h2>
-            <p>Choose the quickest route. In this public demo, every method uses the same safe sample shift and no personal data is uploaded.</p>
+            <h2 tabindex="-1">How do you want to add today’s rota?</h2>
+            <p>Choose the quickest route. This public demo never uploads your data and always continues with the same fixed sample shift.</p>
           </div>
           <span class="stage-badge">Sample data only</span>
         </header>
 
+        <div class="demo-disclosure" role="note">
+          <strong>Public demo boundary</strong>
+          <span>Your photo, voice transcript or typed notes are not interpreted here. The next screen uses a fixed sample so the private product logic remains protected.</span>
+        </div>
+
         <div class="method-grid" role="radiogroup" aria-label="Rota input method">
-          <button class="method-card" type="button" data-method="scan" role="radio" aria-checked="false">
-            <span class="method-icon" aria-hidden="true">▣</span>
-            <strong>Scan rota</strong>
-            <small>Take or choose a photo</small>
-          </button>
-          <button class="method-card" type="button" data-method="voice" role="radio" aria-checked="true">
-            <span class="method-icon" aria-hidden="true">◉</span>
-            <strong>Talk through shift</strong>
-            <small>Speak naturally for one minute</small>
-          </button>
-          <button class="method-card" type="button" data-method="type" role="radio" aria-checked="false">
-            <span class="method-icon" aria-hidden="true">⌨</span>
-            <strong>Paste or type</strong>
-            <small>Rota, notes or changes</small>
-          </button>
-          <button class="method-card" type="button" data-method="venue" role="radio" aria-checked="false">
-            <span class="method-icon" aria-hidden="true">⌂</span>
-            <strong>Use venue setup</strong>
-            <small>Start from saved defaults</small>
-          </button>
+          <button class="method-card" type="button" data-method="scan" role="radio" aria-checked="false" tabindex="-1"><span class="method-icon" aria-hidden="true">▣</span><strong>Scan rota</strong><small>Take or choose a photo</small></button>
+          <button class="method-card" type="button" data-method="voice" role="radio" aria-checked="true" tabindex="0"><span class="method-icon" aria-hidden="true">◉</span><strong>Talk through shift</strong><small>Speak naturally for one minute</small></button>
+          <button class="method-card" type="button" data-method="type" role="radio" aria-checked="false" tabindex="-1"><span class="method-icon" aria-hidden="true">⌨</span><strong>Paste or type</strong><small>Rota, notes or changes</small></button>
+          <button class="method-card" type="button" data-method="venue" role="radio" aria-checked="false" tabindex="-1"><span class="method-icon" aria-hidden="true">⌂</span><strong>Use venue setup</strong><small>Start from saved defaults</small></button>
         </div>
 
         <div class="intake-panel" data-intake-panel="voice">
-          <div class="intake-copy">
-            <strong>Talk through the shift</strong>
-            <span>Pulse can turn speech into an editable briefing before any AI request is made.</span>
-          </div>
-          <div class="voice-actions">
-            <button class="secondary-button" id="voice-button" type="button">Start demo microphone</button>
-            <span id="voice-status">No audio is stored.</span>
-          </div>
-          <label class="text-field">
-            <span>Editable briefing</span>
-            <textarea id="briefing-text" rows="4">Friday dinner, 120 covers. Leo is MOD. Amira supervises bar and till. Sofia hosts until 23:30. Ravi closes. Noah needs a break before peak. Private dining arrives at 19:00.</textarea>
-          </label>
+          <div class="intake-copy"><strong>Talk through the shift</strong><span>The browser can transcribe speech into an editable sample briefing. Pulse does not store audio.</span></div>
+          <div class="voice-actions"><button class="secondary-button" id="voice-button" type="button" aria-pressed="false">Start listening</button><span id="voice-status">Speech recognition is provided by your browser.</span></div>
+          <label class="text-field"><span>Editable briefing</span><textarea id="briefing-text" rows="4">Friday dinner, 120 covers. Leo is MOD. Amira supervises bar and till. Sofia hosts until 23:30. Ravi closes. Noah needs a break before peak. Private dining arrives at 19:00.</textarea></label>
         </div>
 
-        <div class="intake-panel" data-intake-panel="scan" hidden>
-          <div class="intake-copy">
-            <strong>Scan a rota or handwritten note</strong>
-            <span>The real product can extract structured shift information from an image for manager review.</span>
-          </div>
-          <label class="upload-box">
-            <span>Choose an image</span>
-            <input id="scan-file" type="file" accept="image/*" capture="environment">
-            <small id="scan-file-status">The public demo does not upload or inspect your file.</small>
-          </label>
-        </div>
+        <div class="intake-panel" data-intake-panel="scan" hidden><div class="intake-copy"><strong>Scan a rota or handwritten note</strong><span>The real product can extract structured shift information from an image for manager review.</span></div><label class="upload-box"><span>Choose an image</span><input id="scan-file" type="file" accept="image/*" capture="environment"><small id="scan-file-status">No file is uploaded or inspected in this public demo.</small></label></div>
 
-        <div class="intake-panel" data-intake-panel="type" hidden>
-          <div class="intake-copy">
-            <strong>Paste a rota, CSV extract or manager notes</strong>
-            <span>Pulse separates confirmed information from assumptions and asks only material questions.</span>
-          </div>
-          <label class="text-field">
-            <span>Rota or notes</span>
-            <textarea id="typed-rota" rows="5">Leo 15:00-00:30 MOD; Amira 16:00-00:30 Supervisor; Noah 14:00-22:00; Sofia 17:00-23:30 Host; Ravi 17:00-00:30. Peak 17:30-20:30. Private dining 19:00.</textarea>
-          </label>
-        </div>
+        <div class="intake-panel" data-intake-panel="type" hidden><div class="intake-copy"><strong>Paste a rota, CSV extract or manager notes</strong><span>The real product separates confirmed information from assumptions and asks only material questions.</span></div><label class="text-field"><span>Rota or notes</span><textarea id="typed-rota" rows="5">Leo 15:00-00:30 MOD; Amira 16:00-00:30 Supervisor; Noah 14:00-22:00; Sofia 17:00-23:30 Host; Ravi 17:00-00:30. Peak 17:30-20:30. Private dining 19:00.</textarea></label></div>
 
-        <div class="intake-panel" data-intake-panel="venue" hidden>
-          <div class="intake-copy">
-            <strong>Start from the venue’s normal setup</strong>
-            <span>Returning managers confirm who is working and edit only what changed today.</span>
-          </div>
-          <div class="venue-summary">
-            <div><span>Venue profile</span><strong>Harbour House</strong><small>5 usual service areas</small></div>
-            <div><span>Today</span><strong>Evening service</strong><small>16:00–00:30</small></div>
-            <div><span>Working</span><strong>5 people</strong><small>2 lead-capable</small></div>
-          </div>
-          <details class="manual-details">
-            <summary>Open manual venue settings</summary>
-            <p>The full product keeps service times, roster defaults and service-area templates here. Manual editing remains available, but it is no longer the default journey.</p>
-          </details>
-        </div>
+        <div class="intake-panel" data-intake-panel="venue" hidden><div class="intake-copy"><strong>Start from the venue’s normal setup</strong><span>Returning managers confirm who is working and edit only what changed today.</span></div><div class="venue-summary"><div><span>Venue profile</span><strong>Harbour House</strong><small>5 usual service areas</small></div><div><span>Today</span><strong>Evening service</strong><small>16:00–00:30</small></div><div><span>Working</span><strong>5 people</strong><small>2 lead-capable</small></div></div><details class="manual-details"><summary>Open manual venue settings</summary><p>The full product keeps service times, roster defaults and service-area templates here. Manual editing remains available, but it is no longer the default journey.</p></details></div>
       </div>
 
       <div class="stage" data-stage="2" hidden>
-        <header class="stage-head">
-          <div>
-            <p class="stage-eyebrow">AI proposal</p>
-            <h2>Pulse understood the shift and built a proposal.</h2>
-            <p>Nothing has been applied yet. The manager can correct the briefing before the plan reaches the deterministic Readiness Core.</p>
-          </div>
-          <span class="stage-badge neutral">Manager review required</span>
-        </header>
-
-        <div class="proposal-grid">
-          <section class="proposal-card">
-            <span>Shift context</span>
-            <h3>Harbour House · Friday dinner</h3>
-            <p>16:00–00:30 · Peak 17:30–20:30 · 120 covers · Private dining at 19:00</p>
-          </section>
-          <section class="proposal-card">
-            <span>AI role</span>
-            <h3>Understanding and proposal</h3>
-            <p>AI maps names, hours, priorities, breaks, owners and likely handovers. It cannot declare the shift ready.</p>
-          </section>
-        </div>
-
-        <div class="plan-table" aria-label="Proposed team plan">
-          <div class="plan-row plan-header"><span>Person</span><span>Hours</span><span>Proposed responsibility</span></div>
-          <div class="plan-row"><strong>Leo</strong><span>15:00–00:30</span><span>MOD · Floor oversight</span></div>
-          <div class="plan-row"><strong>Amira</strong><span>16:00–00:30</span><span>Bar &amp; Till</span></div>
-          <div class="plan-row"><strong>Noah</strong><span>14:00–22:00</span><span>Food Pass · break required</span></div>
-          <div class="plan-row"><strong>Sofia</strong><span>17:00–23:30</span><span>Host / Entrance</span></div>
-          <div class="plan-row"><strong>Ravi</strong><span>17:00–00:30</span><span>Floor · closing team</span></div>
-        </div>
-
-        <details class="assumption-panel">
-          <summary>View AI assumptions</summary>
-          <ul>
-            <li>Leo and Amira are lead-capable.</li>
-            <li>Ravi can cover Host after 23:30 if the deterministic rules permit it.</li>
-            <li>Private Dining needs a named owner during the peak window.</li>
-          </ul>
-        </details>
+        <header class="stage-head"><div><p class="stage-eyebrow">AI proposal</p><h2 tabindex="-1">Pulse understood the shift and built a proposal.</h2><p>Nothing has been applied yet. The manager can correct the briefing before the plan reaches the deterministic Readiness Core.</p></div><span class="stage-badge neutral">Manager review required</span></header>
+        <div class="proposal-grid"><section class="proposal-card"><span>Shift context</span><h3>Harbour House · Friday dinner</h3><p>16:00–00:30 · Peak 17:30–20:30 · 120 covers · Private dining at 19:00</p></section><section class="proposal-card"><span>AI role</span><h3>Understanding and proposal</h3><p>AI maps names, hours, priorities, breaks, owners and likely handovers. It cannot declare the shift ready.</p></section></div>
+        <div class="plan-table" aria-label="Proposed team plan"><div class="plan-row plan-header"><span>Person</span><span>Hours</span><span>Proposed responsibility</span></div><div class="plan-row"><strong>Leo</strong><span>15:00–00:30</span><span>MOD · Floor oversight</span></div><div class="plan-row"><strong>Amira</strong><span>16:00–00:30</span><span>Bar &amp; Till</span></div><div class="plan-row"><strong>Noah</strong><span>14:00–22:00</span><span>Food Pass · break required</span></div><div class="plan-row"><strong>Sofia</strong><span>17:00–23:30</span><span>Host / Entrance</span></div><div class="plan-row"><strong>Ravi</strong><span>17:00–00:30</span><span>Floor · closing team</span></div></div>
+        <details class="assumption-panel"><summary>View AI assumptions</summary><ul><li>Leo and Amira are lead-capable.</li><li>Ravi can cover Host after 23:30 if the deterministic rules permit it.</li><li>Private Dining needs a named owner during the peak window.</li></ul></details>
       </div>
 
       <div class="stage" data-stage="3" hidden>
-        <header class="stage-head">
-          <div>
-            <p class="stage-eyebrow">Deterministic verification</p>
-            <h2>The Readiness Core found three material issues.</h2>
-            <p>These results come from fixed operational rules, not an AI score. Two corrections are safe; one requires manager judgement.</p>
-          </div>
-          <span class="stage-badge warning">Not ready</span>
-        </header>
-
-        <div class="engine-boundary">
-          <div><strong>AI</strong><span>Understands the rota and proposes a plan.</span></div>
-          <span aria-hidden="true">→</span>
-          <div><strong>Readiness Core</strong><span>Checks hours, coverage, breaks, handovers and closing.</span></div>
-          <span aria-hidden="true">→</span>
-          <div><strong>Manager</strong><span>Confirms any judgement or exception.</span></div>
-        </div>
-
-        <div class="issue-list">
-          <article class="issue-row safe">
-            <span class="issue-state">Safe fix</span>
-            <div><strong>Noah’s break overlaps the peak window</strong><p>Move the break to 16:30–17:00. Cover remains valid and no critical ownership is duplicated.</p></div>
-          </article>
-          <article class="issue-row safe">
-            <span class="issue-state">Safe fix</span>
-            <div><strong>Host has no owner after 23:30</strong><p>Assign Ravi from 23:30–00:30. He is working, available and not carrying another critical area.</p></div>
-          </article>
-          <article class="issue-row decision">
-            <span class="issue-state">Manager</span>
-            <div><strong>Private Dining needs an owner from 19:00–21:00</strong><p>Leo and Amira both satisfy the structural rules. Pulse will not choose between two operationally valid options.</p></div>
-          </article>
-        </div>
-
-        <details class="manual-details">
-          <summary>View full rule details</summary>
-          <p>The demo preserves the safety boundary used in the product: no invented staff, no extended working hours, no automatic approval of an exception and no silent change to confirmed shift facts.</p>
-        </details>
+        <header class="stage-head"><div><p class="stage-eyebrow">Deterministic verification</p><h2 tabindex="-1">The Readiness Core found three material issues.</h2><p>These results come from fixed operational rules, not an AI score. Two corrections are safe; one requires manager judgement.</p></div><span class="stage-badge warning">Not ready</span></header>
+        <div class="engine-boundary"><div><strong>AI</strong><span>Understands the rota and proposes a plan.</span></div><span aria-hidden="true">→</span><div><strong>Readiness Core</strong><span>Checks hours, coverage, breaks, handovers and closing.</span></div><span aria-hidden="true">→</span><div><strong>Manager</strong><span>Confirms any judgement or exception.</span></div></div>
+        <div class="issue-list"><article class="issue-row safe"><span class="issue-state">Safe fix</span><div><strong>Noah’s break overlaps the peak window</strong><p>Move the break to 16:30–17:00. Cover remains valid and no critical ownership is duplicated.</p></div></article><article class="issue-row safe"><span class="issue-state">Safe fix</span><div><strong>Host has no owner after 23:30</strong><p>Assign Ravi from 23:30–00:30. He is working, available and not carrying another critical area.</p></div></article><article class="issue-row decision"><span class="issue-state">Manager</span><div><strong>Private Dining needs an owner from 19:00–21:00</strong><p>Leo and Amira both satisfy the structural rules. Pulse will not choose between two operationally valid options.</p></div></article></div>
+        <details class="manual-details"><summary>View full rule details</summary><p>The demo preserves the safety boundary used in the product: no invented staff, no extended working hours, no automatic approval of an exception and no silent change to confirmed shift facts.</p></details>
       </div>
 
       <div class="stage" data-stage="4" hidden>
-        <header class="stage-head">
-          <div>
-            <p class="stage-eyebrow">Guided repair</p>
-            <h2 id="repair-title">Review the two safe changes before applying.</h2>
-            <p id="repair-lead">Pulse previews every deterministic autofix. The plan changes only after the manager presses Apply.</p>
-          </div>
-          <span class="stage-badge" id="repair-badge">Preview</span>
-        </header>
-
-        <div class="repair-summary" id="repair-summary">
-          <article><span>Break</span><strong>Noah · 16:30–17:00</strong><small>Moves outside peak with valid cover.</small></article>
-          <article><span>Handover</span><strong>Host → Ravi at 23:30</strong><small>Uses existing hours and a safe owner.</small></article>
-        </div>
-
-        <section class="manager-decision" id="manager-decision" hidden aria-labelledby="decision-title">
-          <div>
-            <span class="decision-label">Manager decision still required</span>
-            <h3 id="decision-title">Who should own Private Dining from 19:00–21:00?</h3>
-            <p>Both choices pass the structural rules. Choose using the live service context that software cannot fully know.</p>
-          </div>
-          <div class="decision-options">
-            <label><input type="radio" name="private-dining-owner" value="Leo"><span><strong>Leo</strong><small>MOD with wider floor visibility</small></span></label>
-            <label><input type="radio" name="private-dining-owner" value="Amira"><span><strong>Amira</strong><small>Closer to bar and private dining service</small></span></label>
-          </div>
-        </section>
-
-        <div class="ready-panel" id="ready-panel" hidden>
-          <span class="ready-icon" aria-hidden="true">✓</span>
-          <div><strong>Operational decisions complete</strong><p>The deterministic checks now pass. Pulse Brief and Pulse Relay can be generated from the reviewed plan.</p></div>
-        </div>
+        <header class="stage-head"><div><p class="stage-eyebrow">Guided repair</p><h2 id="repair-title" tabindex="-1">Review the two safe changes before applying.</h2><p id="repair-lead">Pulse previews every deterministic autofix. The plan changes only after the manager presses Apply.</p></div><span class="stage-badge" id="repair-badge">Preview</span></header>
+        <div class="repair-summary" id="repair-summary"><article><span>Break</span><strong>Noah · 16:30–17:00</strong><small>Moves outside peak with valid cover.</small></article><article><span>Handover</span><strong>Host → Ravi at 23:30</strong><small>Uses existing hours and a safe owner.</small></article></div>
+        <section class="manager-decision" id="manager-decision" hidden aria-labelledby="decision-title"><div><span class="decision-label">Manager decision still required</span><h3 id="decision-title">Who should own Private Dining from 19:00–21:00?</h3><p>Both choices pass the structural rules. Choose using the live service context that software cannot fully know.</p></div><div class="decision-options"><label><input type="radio" name="private-dining-owner" value="Leo"><span><strong>Leo</strong><small>MOD with wider floor visibility</small></span></label><label><input type="radio" name="private-dining-owner" value="Amira"><span><strong>Amira</strong><small>Closer to bar and private dining service</small></span></label></div></section>
+        <div class="ready-panel" id="ready-panel" hidden><span class="ready-icon" aria-hidden="true">✓</span><div><strong>Operational decisions complete</strong><p>The deterministic checks now pass. Pulse Brief and Pulse Relay can be generated from the reviewed plan.</p></div></div>
       </div>
 
       <div class="stage" data-stage="5" hidden>
-        <header class="stage-head">
-          <div>
-            <p class="stage-eyebrow">Outputs</p>
-            <h2>The reviewed shift is ready to communicate.</h2>
-            <p>Outputs are generated from the same verified plan. The demo is watermarked and printing remains locked.</p>
-          </div>
-          <span class="stage-badge ready">Ready</span>
-        </header>
-
-        <div class="output-tabs" role="tablist" aria-label="Pulse outputs">
-          <button type="button" role="tab" aria-selected="true" aria-controls="brief-output" data-output-tab="brief">Pulse Brief</button>
-          <button type="button" role="tab" aria-selected="false" aria-controls="relay-output" data-output-tab="relay">Pulse Relay</button>
-        </div>
-
-        <section class="output-panel" id="brief-output" data-output-panel="brief">
-          <div class="brief-paper">
-            <header><div><span>Yberium Pulse</span><h3>Friday Pulse Brief</h3><p>Harbour House · 16:00–00:30 · 120 covers</p></div><strong>Ready</strong></header>
-            <div class="brief-grid">
-              <article><span>MOD</span><strong>Leo</strong><small>15:00–00:30</small></article>
-              <article><span>Private Dining</span><strong id="brief-private-owner">Manager choice</strong><small>19:00–21:00</small></article>
-              <article><span>Noah’s break</span><strong>16:30–17:00</strong><small>Covered outside peak</small></article>
-              <article><span>Late Host</span><strong>Ravi</strong><small>23:30–00:30</small></article>
-            </div>
-            <div class="brief-focus"><strong>Pre-service focus</strong><p>Confirm the 19:00 private dining welcome, protect the peak handover and brief Ravi on the late Host transition.</p></div>
-            <span class="watermark">Public demo · Sample data · Print locked</span>
-          </div>
-        </section>
-
-        <section class="output-panel" id="relay-output" data-output-panel="relay" hidden>
-          <div class="relay-toolbar"><span>4 sample messages generated</span><button class="secondary-button" id="copy-relay" type="button">Copy shown</button></div>
-          <div class="relay-list">
-            <article><header><strong>Manager summary</strong><span>Current</span></header><p>Friday dinner is ready. Leo is MOD. Private Dining: <b id="relay-private-owner">manager choice</b> 19:00–21:00. Noah breaks 16:30–17:00. Ravi takes Host at 23:30.</p></article>
-            <article><header><strong>Noah</strong><span>Individual</span></header><p>Your shift is 14:00–22:00. Food Pass is your main area. Your confirmed break is 16:30–17:00 with cover in place.</p></article>
-            <article><header><strong>Ravi</strong><span>Individual</span></header><p>Your shift is 17:00–00:30. You move from Floor to Host at 23:30 and remain part of the closing team.</p></article>
-            <article><header><strong>Group briefing</strong><span>Team</span></header><p>Tonight: 120 covers, private dining at 19:00, protect the 17:30–20:30 peak and confirm every handover before doors open.</p></article>
-          </div>
-        </section>
+        <header class="stage-head"><div><p class="stage-eyebrow">Outputs</p><h2 tabindex="-1">The reviewed shift is ready to communicate.</h2><p>Outputs are generated from the same verified plan. The demo is watermarked and printing remains locked.</p></div><span class="stage-badge ready">Ready</span></header>
+        <div class="output-tabs" role="tablist" aria-label="Pulse outputs"><button type="button" role="tab" id="brief-tab" aria-selected="true" aria-controls="brief-output" tabindex="0" data-output-tab="brief">Pulse Brief</button><button type="button" role="tab" id="relay-tab" aria-selected="false" aria-controls="relay-output" tabindex="-1" data-output-tab="relay">Pulse Relay</button></div>
+        <section class="output-panel" id="brief-output" role="tabpanel" aria-labelledby="brief-tab" data-output-panel="brief"><div class="brief-paper"><header><div><span>Yberium Pulse</span><h3>Friday Pulse Brief</h3><p>Harbour House · 16:00–00:30 · 120 covers</p></div><strong>Ready</strong></header><div class="brief-grid"><article><span>MOD</span><strong>Leo</strong><small>15:00–00:30</small></article><article><span>Private Dining</span><strong id="brief-private-owner">Manager choice</strong><small>19:00–21:00</small></article><article><span>Noah’s break</span><strong>16:30–17:00</strong><small>Covered outside peak</small></article><article><span>Late Host</span><strong>Ravi</strong><small>23:30–00:30</small></article></div><div class="brief-focus"><strong>Pre-service focus</strong><p>Confirm the 19:00 private dining welcome, protect the peak handover and brief Ravi on the late Host transition.</p></div><span class="watermark">Public demo · Sample data · Print locked</span></div></section>
+        <section class="output-panel" id="relay-output" role="tabpanel" aria-labelledby="relay-tab" data-output-panel="relay" hidden><div class="relay-toolbar"><span>4 sample messages generated</span><div><button class="secondary-button" id="share-relay" type="button" hidden>Share all</button><button class="secondary-button" id="copy-relay" type="button">Copy all</button></div></div><div class="relay-list"><article><header><strong>Manager summary</strong><span>Current</span></header><p>Friday dinner is ready. Leo is MOD. Private Dining: <b id="relay-private-owner">manager choice</b> 19:00–21:00. Noah breaks 16:30–17:00. Ravi takes Host at 23:30.</p><button class="message-copy" type="button">Copy</button></article><article><header><strong>Noah</strong><span>Individual</span></header><p>Your shift is 14:00–22:00. Food Pass is your main area. Your confirmed break is 16:30–17:00 with cover in place.</p><button class="message-copy" type="button">Copy</button></article><article><header><strong>Ravi</strong><span>Individual</span></header><p>Your shift is 17:00–00:30. You move from Floor to Host at 23:30 and remain part of the closing team.</p><button class="message-copy" type="button">Copy</button></article><article><header><strong>Group briefing</strong><span>Team</span></header><p>Tonight: 120 covers, private dining at 19:00, protect the 17:30–20:30 peak and confirm every handover before doors open.</p><button class="message-copy" type="button">Copy</button></article></div></section>
       </div>
     </section>
   </main>
 
-  <div class="action-bar" role="group" aria-label="Demo controls">
-    <div class="action-status" aria-live="polite">
-      <strong id="action-title">Add today’s rota</strong>
-      <span id="action-detail">Choose scan, voice, text or venue setup.</span>
-    </div>
-    <div class="action-buttons">
-      <button class="action-button" type="button" id="back-button" disabled>Back</button>
-      <button class="action-button primary" type="button" id="primary-button">Build sample shift</button>
-    </div>
-  </div>
-
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="action-bar" role="group" aria-label="Demo controls"><div class="action-status" aria-live="polite"><strong id="action-title">Add today’s rota</strong><span id="action-detail">Choose scan, voice, text or venue setup.</span></div><div class="action-buttons"><button class="action-button quiet" type="button" id="reset-button">Start over</button><button class="action-button" type="button" id="back-button" disabled>Back</button><button class="action-button primary" type="button" id="primary-button">Build sample shift</button></div></div>
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 </body>
 </html>
