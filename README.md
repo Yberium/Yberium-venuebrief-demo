@@ -17,4 +17,4 @@ The demo contains no production backend, authentication, billing, private data o
 
 - Signal Lime `#B7F34A` for the mark, buttons and dark-surface accents
 - Accessible Green `#4F7D00` for green borders and indicators on light surfaces
-- Manrope for display type and Inter for interface text
+- Self-hosted Manrope for display type and Inter for interface text
