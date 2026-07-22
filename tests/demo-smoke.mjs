@@ -3,6 +3,7 @@ import vm from "node:vm";
 
 const html = fs.readFileSync("index.html", "utf8");
 const css = fs.readFileSync("assets/product-parity-demo.css", "utf8");
+const mobileCss = fs.readFileSync("assets/mobile-action-bar.css", "utf8");
 const js = fs.readFileSync("assets/product-parity-demo.js", "utf8");
 const manifest = JSON.parse(fs.readFileSync("site.webmanifest", "utf8"));
 
@@ -22,6 +23,8 @@ if (!js.includes("invalidateAfter")) throw new Error("Missing downstream invalid
 if (!js.includes("stopRecognition")) throw new Error("Missing microphone cleanup");
 if (!js.includes("navigator.share")) throw new Error("Missing native share support");
 if (!css.includes(".mobile-progress")) throw new Error("Missing mobile progress styling");
+if (!html.includes("assets/mobile-action-bar.css?v=1.0")) throw new Error("Missing compact mobile action bar stylesheet");
+if (!mobileCss.includes(".action-status") || !mobileCss.includes("grid-template-columns")) throw new Error("Incomplete mobile action bar override");
 if (!manifest.icons?.some(icon => icon.purpose.includes("maskable"))) throw new Error("Missing maskable install icon");
 if (html.includes("product-parity-demo.js?v=1.0") || html.includes("product-parity-demo.css?v=1.0")) throw new Error("Assets were not cache-busted");
 
