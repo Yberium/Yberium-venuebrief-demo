@@ -1,12 +1,20 @@
-# VenueBrief Demo
+# Yberium Pulse public demo
 
-Public static locked demo for VenueBrief.
+Static, sample-data demo for **Yberium Pulse** — shift readiness and operational control for hospitality teams.
 
-Files:
-- index.html
-- v1-7-1.html
+## Demo scope
 
-After enabling GitHub Pages, expected URL:
-https://yberium.github.io/Yberium-venuebrief-demo/
+- Pulse Control readiness summary
+- Shift setup
+- Team and action owners
+- Readiness signals
+- Live Pulse Brief preview
+- Watermarked, print-locked public output
 
-This repo should contain only public static demo files. Do not copy backend, protected-core, Render config, private docs, auth, billing or private repo history.
+The demo contains no production backend, authentication, billing, private data or protected application logic. The repository URL remains unchanged during the staged brand migration.
+
+## Brand tokens
+
+- Signal Lime `#B7F34A` for the mark, buttons and dark-surface accents
+- Accessible Green `#4F7D00` for green borders and indicators on light surfaces
+- Self-hosted Manrope for display type and Inter for interface text

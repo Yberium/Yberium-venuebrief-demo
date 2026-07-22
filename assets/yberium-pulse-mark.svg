@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Yberium Pulse</title>
+  <g fill="none" stroke="#B7F34A" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 5 55 18v28L32 59 9 46V18Z" stroke-width="4"/>
+    <path d="M4 34h14l5-14 8 28 7-20 5 6h17" stroke-width="5"/>
+  </g>
+</svg>
