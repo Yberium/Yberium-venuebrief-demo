@@ -6,7 +6,10 @@
   const journey = [...document.querySelectorAll("[data-journey]")];
   const methodButtons = [...document.querySelectorAll("[data-method]")];
   const intakePanels = [...document.querySelectorAll("[data-intake-panel]")];
+  const outputTabs = [...document.querySelectorAll("[data-output-tab]")];
+  const outputPanels = [...document.querySelectorAll("[data-output-panel]")];
   const backButton = document.getElementById("back-button");
+  const resetButton = document.getElementById("reset-button");
   const primaryButton = document.getElementById("primary-button");
   const actionTitle = document.getElementById("action-title");
   const actionDetail = document.getElementById("action-detail");
@@ -23,6 +26,9 @@
   const readyPanel = document.getElementById("ready-panel");
   const briefPrivateOwner = document.getElementById("brief-private-owner");
   const relayPrivateOwner = document.getElementById("relay-private-owner");
+  const mobileProgress = document.getElementById("mobile-progress");
+  const voiceButton = document.getElementById("voice-button");
+  const voiceStatus = document.getElementById("voice-status");
   const toast = document.getElementById("toast");
 
   let stage = 1;
@@ -33,67 +39,58 @@
   let recognition;
 
   const stageCopy = {
-    1: {
-      title: "Add today’s rota",
-      detail: "Choose scan, voice, text or venue setup.",
-      button: "Build sample shift",
-      readiness: "Not started",
-      label: "Choose an input method",
-      people: "—",
-      safe: "—",
-      decisions: "—"
-    },
-    2: {
-      title: "Review the AI proposal",
-      detail: "Nothing is applied until the manager continues.",
-      button: "Verify with Readiness Core",
-      readiness: "Proposal",
-      label: "Manager review",
-      people: "5",
-      safe: "—",
-      decisions: "—"
-    },
-    3: {
-      title: "Verify deterministic issues",
-      detail: "Two safe fixes and one manager decision.",
-      button: "Preview automatic fixes",
-      readiness: "Not ready",
-      label: "3 material issues",
-      people: "5",
-      safe: "2",
-      decisions: "1"
-    },
-    4: {
-      title: "Repair the shift",
-      detail: "Apply safe fixes, then make the remaining decision.",
-      button: "Apply 2 safe fixes",
-      readiness: "Fixing",
-      label: "Preview changes",
-      people: "5",
-      safe: "2",
-      decisions: "1"
-    },
-    5: {
-      title: "Use the reviewed outputs",
-      detail: "Pulse Brief and Pulse Relay match the verified plan.",
-      button: "Request early access",
-      readiness: "Ready",
-      label: "Verified plan",
-      people: "5",
-      safe: "0",
-      decisions: "0"
-    }
+    1: { title: "Add today’s rota", detail: "Choose scan, voice, text or venue setup.", button: "Build sample shift", readiness: "Not started", label: "Choose an input method", people: "—", safe: "—", decisions: "—", progress: "Add rota" },
+    2: { title: "Review the AI proposal", detail: "Nothing is applied until the manager continues.", button: "Verify with Readiness Core", readiness: "Proposal", label: "Manager review", people: "5", safe: "—", decisions: "—", progress: "AI proposal" },
+    3: { title: "Verify deterministic issues", detail: "Two safe fixes and one manager decision.", button: "Preview automatic fixes", readiness: "Not ready", label: "3 material issues", people: "5", safe: "2", decisions: "1", progress: "Verify" },
+    4: { title: "Repair the shift", detail: "Apply safe fixes, then make the remaining decision.", button: "Apply 2 safe fixes", readiness: "Fixing", label: "Preview changes", people: "5", safe: "2", decisions: "1", progress: "Fix" },
+    5: { title: "Use the reviewed outputs", detail: "Pulse Brief and Pulse Relay match the verified plan.", button: "Request early access", readiness: "Ready", label: "Verified plan", people: "5", safe: "0", decisions: "0", progress: "Outputs" }
   };
 
   function showToast(message) {
     clearTimeout(toastTimer);
     toast.textContent = message;
     toast.classList.add("show");
-    toastTimer = setTimeout(() => toast.classList.remove("show"), 2800);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
+  }
+
+  function stopRecognition(message = "Listening stopped. Pulse does not store audio.") {
+    if (!recognition) return;
+    recognition.onend = null;
+    recognition.stop();
+    recognition = null;
+    voiceButton.setAttribute("aria-pressed", "false");
+    voiceButton.textContent = "Start listening";
+    voiceStatus.textContent = message;
   }
 
   function selectedOwner() {
     return document.querySelector('input[name="private-dining-owner"]:checked')?.value || "";
+  }
+
+  function clearManagerDecision() {
+    managerOwner = "";
+    document.querySelectorAll('input[name="private-dining-owner"]').forEach(input => { input.checked = false; });
+    briefPrivateOwner.textContent = "Manager choice";
+    relayPrivateOwner.textContent = "manager choice";
+  }
+
+  function selectOutputTab(tabName, { focus = false } = {}) {
+    outputTabs.forEach(tab => {
+      const active = tab.dataset.outputTab === tabName;
+      tab.setAttribute("aria-selected", String(active));
+      tab.tabIndex = active ? 0 : -1;
+      if (active && focus) tab.focus();
+    });
+    outputPanels.forEach(panel => { panel.hidden = panel.dataset.outputPanel !== tabName; });
+  }
+
+  function invalidateAfter(targetStage) {
+    stopRecognition();
+    if (targetStage < 5) selectOutputTab("brief");
+    if (targetStage < 4) {
+      safeFixesApplied = false;
+      clearManagerDecision();
+    }
   }
 
   function updateRepairState() {
@@ -123,7 +120,7 @@
     managerDecision.hidden = false;
     if (!managerOwner) {
       repairTitle.textContent = "Two safe fixes applied. One manager decision remains.";
-      repairLead.textContent = "Pulse has resolved only the changes that passed the deterministic safety rules.";
+      repairLead.textContent = "Pulse resolved only the changes that passed the deterministic safety rules.";
       repairBadge.textContent = "Manager decision";
       repairBadge.className = "stage-badge warning";
       readyPanel.hidden = true;
@@ -153,7 +150,7 @@
     statusDecisions.textContent = "0";
   }
 
-  function renderStage({ scroll = true } = {}) {
+  function renderStage({ scroll = true, focus = true } = {}) {
     stages.forEach(node => { node.hidden = Number(node.dataset.stage) !== stage; });
     journey.forEach(node => {
       const value = Number(node.dataset.journey);
@@ -171,6 +168,7 @@
     statusPeople.textContent = copy.people;
     statusSafe.textContent = copy.safe;
     statusDecisions.textContent = copy.decisions;
+    mobileProgress.textContent = `${stage} of 5 · ${copy.progress}`;
 
     if (stage === 4) updateRepairState();
     if (stage === 5) {
@@ -178,39 +176,56 @@
       relayPrivateOwner.textContent = managerOwner || "manager choice";
     }
 
+    const activeStage = stages.find(node => !node.hidden);
     if (scroll) document.querySelector(".journey").scrollIntoView({ behavior: "smooth", block: "nearest" });
+    if (focus) requestAnimationFrame(() => activeStage?.querySelector("h2")?.focus({ preventScroll: true }));
   }
 
-  function setMethod(nextMethod) {
+  function setMethod(nextMethod, { focus = false } = {}) {
+    stopRecognition();
     method = nextMethod;
-    methodButtons.forEach(button => button.setAttribute("aria-checked", String(button.dataset.method === method)));
+    methodButtons.forEach(button => {
+      const selected = button.dataset.method === method;
+      button.setAttribute("aria-checked", String(selected));
+      button.tabIndex = selected ? 0 : -1;
+      if (selected && focus) button.focus();
+    });
     intakePanels.forEach(panel => { panel.hidden = panel.dataset.intakePanel !== method; });
+    invalidateAfter(1);
   }
 
-  methodButtons.forEach(button => button.addEventListener("click", () => setMethod(button.dataset.method)));
+  methodButtons.forEach((button, index) => {
+    button.addEventListener("click", () => setMethod(button.dataset.method));
+    button.addEventListener("keydown", event => {
+      if (!["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp", "Home", "End"].includes(event.key)) return;
+      event.preventDefault();
+      let nextIndex = index;
+      if (["ArrowRight", "ArrowDown"].includes(event.key)) nextIndex = (index + 1) % methodButtons.length;
+      if (["ArrowLeft", "ArrowUp"].includes(event.key)) nextIndex = (index - 1 + methodButtons.length) % methodButtons.length;
+      if (event.key === "Home") nextIndex = 0;
+      if (event.key === "End") nextIndex = methodButtons.length - 1;
+      setMethod(methodButtons[nextIndex].dataset.method, { focus: true });
+    });
+  });
 
   document.getElementById("scan-file").addEventListener("change", event => {
     const file = event.target.files?.[0];
     document.getElementById("scan-file-status").textContent = file
-      ? `${file.name} selected locally. It will not be uploaded or inspected in this demo.`
-      : "The public demo does not upload or inspect your file.";
+      ? `${file.name} selected locally. It is not uploaded or interpreted in this demo.`
+      : "No file is uploaded or inspected in this public demo.";
   });
 
-  document.getElementById("voice-button").addEventListener("click", () => {
+  voiceButton.addEventListener("click", () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const status = document.getElementById("voice-status");
     const textarea = document.getElementById("briefing-text");
 
     if (!SpeechRecognition) {
-      status.textContent = "Speech recognition is not supported here. The editable sample briefing remains available.";
+      voiceStatus.textContent = "Speech recognition is unavailable here. Use the editable sample briefing instead.";
       showToast("Voice capture is unavailable in this browser.");
       return;
     }
-
     if (recognition) {
-      recognition.stop();
-      recognition = null;
-      status.textContent = "Listening stopped. No audio was stored.";
+      stopRecognition();
       return;
     }
 
@@ -219,7 +234,11 @@
     recognition.interimResults = true;
     recognition.continuous = false;
     let finalText = "";
-    recognition.onstart = () => { status.textContent = "Listening… no audio is stored."; };
+    recognition.onstart = () => {
+      voiceButton.setAttribute("aria-pressed", "true");
+      voiceButton.textContent = "Stop listening";
+      voiceStatus.textContent = "Listening… speech recognition is provided by your browser.";
+    };
     recognition.onresult = event => {
       let interim = "";
       for (let index = event.resultIndex; index < event.results.length; index += 1) {
@@ -228,10 +247,20 @@
         else interim += transcript;
       }
       if (finalText.trim()) textarea.value = finalText.trim();
-      status.textContent = interim ? `Listening: ${interim}` : "Transcript added. Review it before continuing.";
+      voiceStatus.textContent = interim ? `Listening: ${interim}` : "Transcript added. The demo will still use its fixed sample shift.";
     };
-    recognition.onerror = () => { status.textContent = "Microphone unavailable. Use the editable briefing instead."; recognition = null; };
-    recognition.onend = () => { recognition = null; if (!finalText.trim()) status.textContent = "Listening ended. The sample briefing remains editable."; };
+    recognition.onerror = () => {
+      recognition = null;
+      voiceButton.setAttribute("aria-pressed", "false");
+      voiceButton.textContent = "Start listening";
+      voiceStatus.textContent = "Microphone unavailable. Use the editable sample briefing instead.";
+    };
+    recognition.onend = () => {
+      recognition = null;
+      voiceButton.setAttribute("aria-pressed", "false");
+      voiceButton.textContent = "Start listening";
+      if (!finalText.trim()) voiceStatus.textContent = "Listening ended. The sample briefing remains editable.";
+    };
     recognition.start();
   });
 
@@ -242,37 +271,84 @@
     });
   });
 
-  document.querySelectorAll("[data-output-tab]").forEach(button => {
-    button.addEventListener("click", () => {
-      const selected = button.dataset.outputTab;
-      document.querySelectorAll("[data-output-tab]").forEach(tab => tab.setAttribute("aria-selected", String(tab === button)));
-      document.querySelectorAll("[data-output-panel]").forEach(panel => { panel.hidden = panel.dataset.outputPanel !== selected; });
+  outputTabs.forEach((button, index) => {
+    button.addEventListener("click", () => selectOutputTab(button.dataset.outputTab));
+    button.addEventListener("keydown", event => {
+      if (!["ArrowRight", "ArrowLeft", "Home", "End"].includes(event.key)) return;
+      event.preventDefault();
+      let nextIndex = index;
+      if (event.key === "ArrowRight") nextIndex = (index + 1) % outputTabs.length;
+      if (event.key === "ArrowLeft") nextIndex = (index - 1 + outputTabs.length) % outputTabs.length;
+      if (event.key === "Home") nextIndex = 0;
+      if (event.key === "End") nextIndex = outputTabs.length - 1;
+      selectOutputTab(outputTabs[nextIndex].dataset.outputTab, { focus: true });
     });
   });
 
-  document.getElementById("copy-relay").addEventListener("click", async () => {
-    const text = [...document.querySelectorAll("#relay-output article")]
-      .map(article => article.innerText.trim())
+  function relayText() {
+    return [...document.querySelectorAll("#relay-output article")]
+      .map(article => `${article.querySelector("header strong")?.textContent}\n${article.querySelector("p")?.innerText.trim()}`)
       .join("\n\n");
+  }
+
+  async function copyText(text, successMessage) {
     try {
       await navigator.clipboard.writeText(text);
-      showToast("Sample Relay messages copied.");
+      showToast(successMessage);
     } catch {
       showToast("Copy is unavailable in this browser.");
     }
+  }
+
+  document.getElementById("copy-relay").addEventListener("click", () => copyText(relayText(), "All sample Relay messages copied."));
+  document.querySelectorAll(".message-copy").forEach(button => {
+    button.addEventListener("click", () => {
+      const article = button.closest("article");
+      const title = article.querySelector("header strong")?.textContent || "Relay message";
+      const text = `${title}\n${article.querySelector("p")?.innerText.trim()}`;
+      copyText(text, `${title} copied.`);
+    });
   });
+
+  const shareButton = document.getElementById("share-relay");
+  if (navigator.share) {
+    shareButton.hidden = false;
+    shareButton.addEventListener("click", async () => {
+      try {
+        await navigator.share({ title: "Yberium Pulse Relay", text: relayText() });
+      } catch (error) {
+        if (error?.name !== "AbortError") showToast("Sharing is unavailable right now.");
+      }
+    });
+  }
 
   backButton.addEventListener("click", () => {
     if (stage <= 1) return;
-    stage -= 1;
+    const targetStage = stage - 1;
+    invalidateAfter(targetStage);
+    stage = targetStage;
     renderStage();
   });
 
+  resetButton.addEventListener("click", () => {
+    stopRecognition();
+    stage = 1;
+    safeFixesApplied = false;
+    clearManagerDecision();
+    selectOutputTab("brief");
+    document.getElementById("scan-file").value = "";
+    document.getElementById("scan-file-status").textContent = "No file is uploaded or inspected in this public demo.";
+    setMethod("voice");
+    renderStage({ scroll: true, focus: true });
+    showToast("Demo reset. Start a new sample shift.");
+  });
+
   primaryButton.addEventListener("click", () => {
+    stopRecognition();
     if (stage === 1) {
       stage = 2;
       renderStage();
-      showToast(`Sample shift built from the ${method === "venue" ? "saved venue setup" : `${method} route`}.`);
+      showToast(`Fixed sample shift opened from the ${method === "venue" ? "venue setup" : `${method} route`}.`);
       return;
     }
     if (stage === 2) {
@@ -292,6 +368,7 @@
         safeFixesApplied = true;
         updateRepairState();
         showToast("Two safe fixes applied. One manager decision remains.");
+        document.querySelector('input[name="private-dining-owner"]')?.focus();
         return;
       }
       managerOwner = selectedOwner();
@@ -304,6 +381,13 @@
     window.location.href = earlyAccessUrl;
   });
 
+  const displayMode = window.matchMedia("(display-mode: standalone)");
+  function updateInstallState() {
+    document.getElementById("install-state").textContent = displayMode.matches || window.navigator.standalone ? "Installed demo" : "Interactive demo";
+  }
+  displayMode.addEventListener?.("change", updateInstallState);
+  updateInstallState();
+
   window.addEventListener("keydown", event => {
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "p") {
       event.preventDefault();
@@ -313,5 +397,6 @@
   window.addEventListener("beforeprint", () => showToast("Printing is locked in the public demo."));
 
   setMethod(method);
-  renderStage({ scroll: false });
+  selectOutputTab("brief");
+  renderStage({ scroll: false, focus: false });
 })();
