@@ -1,6 +1,1552 @@
-<!doctype html>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>VenueBrief Demo</title>
-<meta http-equiv="refresh" content="0; url=./sr2.html">
-<a href="./sr2.html">Open VenueBrief demo</a>
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Yberium Pulse — Public Shift Readiness Demo</title>
+  <meta name="description" content="Try the Yberium Pulse public demo: review a sample shift, confirm action owners, spot readiness gaps and generate a Pulse Brief.">
+  <meta name="theme-color" content="#171A1F">
+  <meta name="color-scheme" content="light">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Yberium Pulse — Public Shift Readiness Demo">
+  <meta property="og:description" content="Know the shift before it starts. Explore a sample readiness flow for hospitality managers.">
+  <meta property="og:site_name" content="Yberium Pulse">
+  <meta property="og:url" content="https://yberium.github.io/Yberium-venuebrief-demo/">
+  <link rel="canonical" href="https://yberium.github.io/Yberium-venuebrief-demo/">
+  <link rel="icon" href="assets/yberium-pulse-mark.svg" type="image/svg+xml">
+  <link rel="manifest" href="site.webmanifest">
+  <style>
+    :root {
+      --graphite: #171a1f;
+      --graphite-soft: #22272f;
+      --signal-lime: #b7f34a;
+      --signal-lime-strong: #93d91a;
+      --green: #2fbf71;
+      --amber: #f4b740;
+      --red: #e05252;
+      --off-white: #f5f6f7;
+      --surface: #ffffff;
+      --surface-muted: #eef1f3;
+      --ink: #101318;
+      --muted: #5f6873;
+      --line: #dce1e5;
+      --shadow: 0 18px 52px rgba(23, 26, 31, 0.1);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-width: 320px;
+      background: var(--off-white);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background: var(--off-white);
+      font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.45;
+      text-rendering: optimizeLegibility;
+    }
+
+    body::selection {
+      color: var(--graphite);
+      background: var(--signal-lime);
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--green);
+      outline-offset: 3px;
+    }
+
+    .skip-link {
+      position: fixed;
+      z-index: 100;
+      top: 8px;
+      left: 8px;
+      padding: 10px 14px;
+      color: #fff;
+      background: var(--graphite);
+      border-radius: 9px;
+      transform: translateY(-160%);
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    .app-header {
+      position: sticky;
+      z-index: 30;
+      top: 0;
+      border-bottom: 1px solid rgba(220, 225, 229, 0.92);
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(14px);
+    }
+
+    .header-inner {
+      width: min(calc(100% - 36px), 1240px);
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-inline: auto;
+    }
+
+    .brand {
+      min-width: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--graphite);
+      font-family: Manrope, Inter, sans-serif;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 auto;
+    }
+
+    .brand-name {
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+      font-size: 20px;
+      font-weight: 430;
+      letter-spacing: -0.035em;
+      white-space: nowrap;
+    }
+
+    .brand-name strong {
+      font-size: 22px;
+      font-style: italic;
+      font-weight: 820;
+      letter-spacing: -0.05em;
+    }
+
+    .demo-badge,
+    .status-pill,
+    .micro-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 780;
+      letter-spacing: 0.01em;
+    }
+
+    .demo-badge {
+      padding: 6px 9px;
+      color: #404852;
+      background: var(--surface-muted);
+    }
+
+    .header-link {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: #303640;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 740;
+    }
+
+    .app-shell {
+      width: min(calc(100% - 36px), 1240px);
+      margin: 22px auto 0;
+      padding-bottom: calc(96px + env(safe-area-inset-bottom));
+    }
+
+    .control-strip {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 26px;
+      align-items: center;
+      padding: 22px 24px;
+      color: #fff;
+      background: var(--graphite);
+      border: 1px solid var(--graphite);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .control-kicker {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0 0 7px;
+      color: var(--signal-lime);
+      font-size: 12px;
+      font-weight: 820;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .control-kicker::before {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--signal-lime);
+      box-shadow: 0 0 0 5px rgba(183, 243, 74, 0.12);
+      content: "";
+    }
+
+    .control-strip h1 {
+      margin: 0;
+      font-family: Manrope, Inter, sans-serif;
+      font-size: clamp(27px, 3vw, 40px);
+      font-weight: 720;
+      letter-spacing: -0.052em;
+      line-height: 1.04;
+    }
+
+    .control-copy {
+      max-width: 670px;
+      margin: 9px 0 0;
+      color: #cbd1d7;
+      font-size: 14px;
+    }
+
+    .readiness-cluster {
+      min-width: 390px;
+      display: grid;
+      grid-template-columns: 118px repeat(3, minmax(74px, 1fr));
+      overflow: hidden;
+      border: 1px solid #343a43;
+      border-radius: 14px;
+      background: var(--graphite-soft);
+    }
+
+    .readiness-score,
+    .metric {
+      min-height: 86px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 12px 14px;
+    }
+
+    .readiness-score {
+      color: var(--graphite);
+      background: var(--signal-lime);
+    }
+
+    .readiness-score strong {
+      font-size: 31px;
+      letter-spacing: -0.055em;
+      line-height: 1;
+    }
+
+    .readiness-score span,
+    .metric span {
+      margin-top: 5px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .metric {
+      border-left: 1px solid #343a43;
+    }
+
+    .metric strong {
+      font-size: 19px;
+      line-height: 1;
+    }
+
+    .metric span {
+      color: #9da6af;
+    }
+
+    .step-nav {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 14px 0;
+      padding: 7px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: #fff;
+    }
+
+    .step-button {
+      min-width: 0;
+      min-height: 52px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border: 0;
+      border-radius: 10px;
+      color: #4b5560;
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .step-button:hover {
+      background: var(--surface-muted);
+    }
+
+    .step-button[aria-current="step"] {
+      color: #fff;
+      background: var(--graphite);
+    }
+
+    .step-number {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: #fff;
+      color: var(--graphite);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .step-button[aria-current="step"] .step-number {
+      border-color: var(--signal-lime);
+      background: var(--signal-lime);
+    }
+
+    .step-label {
+      min-width: 0;
+      display: grid;
+      gap: 1px;
+    }
+
+    .step-label strong {
+      overflow: hidden;
+      font-size: 13px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .step-label small {
+      color: #8a939d;
+      font-size: 10px;
+      font-weight: 650;
+    }
+
+    .step-button[aria-current="step"] .step-label small {
+      color: #cbd1d7;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(430px, 1.05fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .flow-card,
+    .preview-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      box-shadow: 0 10px 34px rgba(23, 26, 31, 0.06);
+    }
+
+    .screen {
+      min-height: 510px;
+      padding: clamp(22px, 3vw, 34px);
+    }
+
+    .screen[hidden] {
+      display: none;
+    }
+
+    .screen-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .micro-label {
+      margin: 0 0 10px;
+      padding: 6px 9px;
+      color: #4d5b33;
+      background: #effbd8;
+      text-transform: uppercase;
+    }
+
+    .screen h2 {
+      margin: 0;
+      font-family: Manrope, Inter, sans-serif;
+      font-size: clamp(29px, 3.4vw, 43px);
+      font-weight: 710;
+      letter-spacing: -0.055em;
+      line-height: 1.02;
+    }
+
+    .screen-lead {
+      max-width: 570px;
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .status-pill {
+      flex: 0 0 auto;
+      padding: 7px 10px;
+      color: #6e4b07;
+      background: #fff4d8;
+      border: 1px solid #f5d994;
+    }
+
+    .status-pill::before {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--amber);
+      content: "";
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .summary-item {
+      min-height: 88px;
+      padding: 14px 15px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fafbfb;
+    }
+
+    .summary-item span {
+      display: block;
+      margin-bottom: 6px;
+      color: #737d87;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .summary-item strong {
+      display: block;
+      font-size: 15px;
+    }
+
+    .summary-item small {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .detail-panel {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .detail-panel summary {
+      padding: 14px 15px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    .detail-copy {
+      display: grid;
+      gap: 8px;
+      padding: 0 15px 15px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .owner-list,
+    .gap-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .owner-row {
+      display: grid;
+      grid-template-columns: minmax(115px, 0.8fr) minmax(125px, 0.85fr) minmax(170px, 1.35fr);
+      gap: 10px;
+      align-items: center;
+      min-height: 56px;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: #fff;
+    }
+
+    .owner-name {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 13px;
+      font-weight: 790;
+    }
+
+    .avatar {
+      width: 30px;
+      height: 30px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      color: var(--graphite);
+      background: #eafbc8;
+      font-size: 11px;
+      font-weight: 850;
+    }
+
+    .owner-role,
+    .owner-shift {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .owner-assignment {
+      display: block;
+      color: var(--graphite);
+      font-size: 12px;
+      font-weight: 760;
+    }
+
+    .owner-shift {
+      display: block;
+      margin-top: 2px;
+    }
+
+    .inline-action {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 14px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--graphite);
+      background: #fff;
+      cursor: pointer;
+      font-weight: 760;
+    }
+
+    .inline-action:hover {
+      border-color: #aeb6bd;
+      background: #fafbfb;
+    }
+
+    .gap-item {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 11px;
+      align-items: start;
+      padding: 13px 14px;
+      border: 1px solid #f0d38d;
+      border-radius: 11px;
+      color: #5b4312;
+      background: #fff9e9;
+    }
+
+    .gap-item.ok {
+      border-color: #a9e2c2;
+      color: #135d36;
+      background: #eefbf4;
+    }
+
+    .gap-dot {
+      width: 9px;
+      height: 9px;
+      margin-top: 5px;
+      border-radius: 50%;
+      background: var(--amber);
+    }
+
+    .gap-item.ok .gap-dot {
+      background: var(--green);
+    }
+
+    .gap-copy strong,
+    .gap-copy span {
+      display: block;
+    }
+
+    .gap-copy strong {
+      font-size: 13px;
+    }
+
+    .gap-copy span {
+      margin-top: 2px;
+      color: #7a622d;
+      font-size: 11px;
+    }
+
+    .gap-item.ok .gap-copy span {
+      color: #387653;
+    }
+
+    .gap-owner {
+      padding: 4px 7px;
+      border-radius: 7px;
+      color: #5c4b21;
+      background: rgba(244, 183, 64, 0.18);
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .gap-item.ok .gap-owner {
+      color: #286345;
+      background: rgba(47, 191, 113, 0.14);
+    }
+
+    .completion-box {
+      padding: 20px;
+      border: 1px solid #b6e7ca;
+      border-radius: 14px;
+      background: #f0fbf5;
+    }
+
+    .completion-box strong {
+      display: block;
+      color: #135d36;
+      font-size: 18px;
+    }
+
+    .completion-box p {
+      margin: 7px 0 0;
+      color: #387653;
+      font-size: 13px;
+    }
+
+    .primary-link {
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 16px;
+      padding: 11px 17px;
+      border: 1px solid var(--signal-lime-strong);
+      border-radius: 10px;
+      color: var(--graphite);
+      background: var(--signal-lime);
+      font-weight: 820;
+    }
+
+    .primary-link:hover {
+      background: #a9ec31;
+    }
+
+    .preview-card {
+      position: sticky;
+      top: 84px;
+      overflow: hidden;
+    }
+
+    .preview-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 15px 18px;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      color: var(--graphite);
+      background: #fff;
+      cursor: default;
+      text-align: left;
+    }
+
+    .preview-toggle strong,
+    .preview-toggle small {
+      display: block;
+    }
+
+    .preview-toggle strong {
+      font-size: 14px;
+    }
+
+    .preview-toggle small {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .preview-chevron {
+      display: none;
+      font-size: 18px;
+    }
+
+    .pulse-paper {
+      position: relative;
+      min-height: 510px;
+      padding: 25px;
+      background: #fbfcfc;
+    }
+
+    .paper-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      padding-bottom: 17px;
+      border-bottom: 2px solid var(--graphite);
+    }
+
+    .paper-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .paper-brand svg {
+      width: 27px;
+      height: 27px;
+      flex: 0 0 auto;
+    }
+
+    .paper-brand span {
+      display: block;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .paper-brand strong {
+      display: block;
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 20px;
+      letter-spacing: -0.04em;
+    }
+
+    .paper-status {
+      padding: 6px 8px;
+      border-radius: 8px;
+      color: #6e4b07;
+      background: #fff0c7;
+      font-size: 10px;
+      font-weight: 820;
+    }
+
+    .paper-meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .paper-meta div {
+      padding: 9px 10px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fff;
+    }
+
+    .paper-meta span,
+    .paper-meta strong {
+      display: block;
+    }
+
+    .paper-meta span {
+      color: #7c858e;
+      font-size: 8px;
+      font-weight: 780;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .paper-meta strong {
+      margin-top: 3px;
+      font-size: 11px;
+    }
+
+    .paper-section {
+      margin-top: 14px;
+    }
+
+    .paper-section h3 {
+      margin: 0 0 7px;
+      color: #626c76;
+      font-size: 9px;
+      font-weight: 850;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .paper-section .owner-row {
+      min-height: 41px;
+      grid-template-columns: minmax(90px, 0.8fr) minmax(90px, 0.75fr) minmax(120px, 1.25fr);
+      padding: 5px 7px;
+      border-radius: 8px;
+    }
+
+    .paper-section .avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 7px;
+      font-size: 9px;
+    }
+
+    .paper-section .owner-name,
+    .paper-section .owner-role,
+    .paper-section .owner-assignment,
+    .paper-section .owner-shift {
+      font-size: 10px;
+    }
+
+    .paper-section .gap-item {
+      padding: 8px 9px;
+      border-radius: 8px;
+    }
+
+    .paper-section .gap-copy strong {
+      font-size: 10px;
+    }
+
+    .paper-section .gap-copy span {
+      display: none;
+    }
+
+    .paper-focus {
+      padding: 10px 11px;
+      border-left: 4px solid var(--signal-lime-strong);
+      border-radius: 0 8px 8px 0;
+      background: #effbd8;
+      font-size: 11px;
+      font-weight: 720;
+    }
+
+    .watermark {
+      position: absolute;
+      right: 18px;
+      bottom: 13px;
+      color: #9aa2aa;
+      font-size: 8px;
+      font-weight: 780;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .action-bar {
+      position: fixed;
+      z-index: 25;
+      bottom: 0;
+      left: 50%;
+      width: min(calc(100% - 36px), 1240px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 11px 14px calc(11px + env(safe-area-inset-bottom));
+      border: 1px solid rgba(220, 225, 229, 0.96);
+      border-bottom: 0;
+      border-radius: 16px 16px 0 0;
+      background: rgba(255, 255, 255, 0.97);
+      box-shadow: 0 -12px 35px rgba(23, 26, 31, 0.09);
+      backdrop-filter: blur(14px);
+      transform: translateX(-50%);
+    }
+
+    .action-status strong,
+    .action-status span {
+      display: block;
+    }
+
+    .action-status strong {
+      font-size: 13px;
+    }
+
+    .action-status span {
+      margin-top: 1px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-button {
+      min-width: 104px;
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 15px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--graphite);
+      background: #fff;
+      cursor: pointer;
+      font-weight: 790;
+    }
+
+    .action-button.primary {
+      border-color: var(--signal-lime-strong);
+      background: var(--signal-lime);
+    }
+
+    .action-button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .toast {
+      position: fixed;
+      z-index: 80;
+      right: 18px;
+      bottom: 90px;
+      max-width: min(340px, calc(100% - 36px));
+      padding: 12px 14px;
+      border-radius: 11px;
+      color: #fff;
+      background: var(--graphite);
+      box-shadow: var(--shadow);
+      font-size: 13px;
+      font-weight: 700;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
+      transition: opacity 160ms ease, transform 160ms ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 980px) {
+      .control-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .readiness-cluster {
+        min-width: 0;
+      }
+
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .screen {
+        min-height: 0;
+      }
+
+      .preview-card {
+        position: static;
+      }
+
+      .preview-toggle {
+        cursor: pointer;
+      }
+
+      .preview-chevron {
+        display: block;
+        transition: transform 160ms ease;
+      }
+
+      .preview-body {
+        display: none;
+      }
+
+      .preview-card.open .preview-body {
+        display: block;
+      }
+
+      .preview-card.open .preview-chevron {
+        transform: rotate(180deg);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .header-inner,
+      .app-shell,
+      .action-bar {
+        width: min(calc(100% - 24px), 1240px);
+      }
+
+      .header-inner {
+        min-height: 64px;
+      }
+
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+      }
+
+      .brand-name {
+        font-size: 18px;
+      }
+
+      .brand-name strong {
+        font-size: 20px;
+      }
+
+      .demo-badge {
+        display: none;
+      }
+
+      .header-link {
+        min-height: 40px;
+        padding-inline: 11px;
+      }
+
+      .app-shell {
+        margin-top: 12px;
+      }
+
+      .control-strip {
+        gap: 18px;
+        padding: 19px;
+      }
+
+      .control-copy {
+        font-size: 13px;
+      }
+
+      .readiness-cluster {
+        grid-template-columns: 96px repeat(3, minmax(0, 1fr));
+      }
+
+      .readiness-score,
+      .metric {
+        min-height: 72px;
+        padding: 9px 10px;
+      }
+
+      .readiness-score strong {
+        font-size: 26px;
+      }
+
+      .metric strong {
+        font-size: 16px;
+      }
+
+      .readiness-score span,
+      .metric span {
+        font-size: 8px;
+      }
+
+      .step-nav {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 4px;
+        padding: 5px;
+      }
+
+      .step-button {
+        min-height: 52px;
+        justify-content: center;
+        padding: 7px 4px;
+      }
+
+      .step-number {
+        width: 30px;
+        height: 30px;
+      }
+
+      .step-label {
+        display: none;
+      }
+
+      .screen {
+        padding: 20px;
+      }
+
+      .screen-head {
+        display: block;
+        margin-bottom: 20px;
+      }
+
+      .status-pill {
+        width: fit-content;
+        margin-top: 12px;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .primary-link {
+        display: none;
+      }
+
+      .summary-item {
+        min-height: 76px;
+      }
+
+      .owner-row {
+        grid-template-columns: minmax(0, 1fr) minmax(125px, 0.9fr);
+      }
+
+      .owner-role {
+        display: none;
+      }
+
+      .gap-item {
+        grid-template-columns: auto minmax(0, 1fr);
+      }
+
+      .gap-owner {
+        grid-column: 2;
+        width: fit-content;
+      }
+
+      .pulse-paper {
+        padding: 18px;
+      }
+
+      .paper-section .owner-row {
+        grid-template-columns: minmax(0, 1fr) minmax(130px, 1fr);
+      }
+
+      .paper-section .owner-role {
+        display: none;
+      }
+
+      .action-bar {
+        gap: 8px;
+        padding-inline: 10px;
+      }
+
+      .action-status span {
+        display: none;
+      }
+
+      .action-buttons {
+        flex: 1;
+        justify-content: flex-end;
+      }
+
+      .action-button {
+        min-width: 88px;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .header-link {
+        font-size: 0;
+      }
+
+      .header-link::after {
+        font-size: 13px;
+        content: "Website ↗";
+      }
+
+      .readiness-cluster {
+        grid-template-columns: 92px repeat(3, minmax(0, 1fr));
+      }
+
+      .metric {
+        padding-inline: 7px;
+      }
+
+      .metric span {
+        letter-spacing: 0;
+      }
+
+      .paper-meta {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .paper-meta div:last-child {
+        grid-column: 1 / -1;
+      }
+
+      .action-status {
+        display: none;
+      }
+
+      .action-buttons,
+      .action-button {
+        width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @media print {
+      body > * {
+        display: none !important;
+      }
+
+      body::before {
+        display: block;
+        padding: 32px;
+        color: #111;
+        font: 700 18px/1.4 Arial, sans-serif;
+        content: "Yberium Pulse public demo — printing is locked. Request early access for export-ready Pulse Briefs.";
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to demo</a>
+
+  <header class="app-header">
+    <div class="header-inner">
+      <a class="brand" href="./" aria-label="Yberium Pulse demo home">
+        <svg class="brand-mark" viewBox="0 0 64 64" role="img" aria-label="Yberium Pulse">
+          <g fill="none" stroke="#93D91A" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M32 5 55 18v28L32 59 9 46V18Z" stroke-width="4"></path>
+            <path d="M4 34h14l5-14 8 28 7-20 5 6h17" stroke-width="5"></path>
+          </g>
+        </svg>
+        <span class="brand-name">Yberium <strong>Pulse</strong></span>
+        <span class="demo-badge">Public demo</span>
+      </a>
+      <a class="header-link" href="https://yberium.github.io/venuebrief-landing/" rel="noopener">Product website ↗</a>
+    </div>
+  </header>
+
+  <main class="app-shell" id="main-content">
+    <section class="control-strip" aria-labelledby="control-title">
+      <div>
+        <p class="control-kicker">Pulse Control</p>
+        <h1 id="control-title">Know the shift before it starts.</h1>
+        <p class="control-copy">Sample data only. Review the shift, confirm ownership and resolve the signals that need attention before service.</p>
+      </div>
+      <div class="readiness-cluster" role="group" aria-label="Sample readiness summary">
+        <div class="readiness-score"><strong>76%</strong><span>Needs attention</span></div>
+        <div class="metric"><strong>5</strong><span>On shift</span></div>
+        <div class="metric"><strong>3</strong><span>Signals</span></div>
+        <div class="metric"><strong>1</strong><span>Role open</span></div>
+      </div>
+    </section>
+
+    <nav class="step-nav" aria-label="Demo progress">
+      <button class="step-button" type="button" data-step="1" aria-controls="screen-1">
+        <span class="step-number">1</span><span class="step-label"><strong>Shift setup</strong><small>Service context</small></span>
+      </button>
+      <button class="step-button" type="button" data-step="2" aria-controls="screen-2">
+        <span class="step-number">2</span><span class="step-label"><strong>Owners</strong><small>Action coverage</small></span>
+      </button>
+      <button class="step-button" type="button" data-step="3" aria-controls="screen-3">
+        <span class="step-number">3</span><span class="step-label"><strong>Readiness</strong><small>Signals and gaps</small></span>
+      </button>
+      <button class="step-button" type="button" data-step="4" aria-controls="screen-4">
+        <span class="step-number">4</span><span class="step-label"><strong>Pulse Brief</strong><small>Manager output</small></span>
+      </button>
+    </nav>
+
+    <div class="workspace">
+      <div class="flow-card">
+        <section class="screen" id="screen-1" data-screen="1" aria-labelledby="screen-1-title">
+          <div class="screen-head">
+            <div>
+              <p class="micro-label">Shift setup</p>
+              <h2 id="screen-1-title">Busy evening service</h2>
+              <p class="screen-lead">The sample shift is pre-filled so you can move directly through the readiness flow.</p>
+            </div>
+            <span class="status-pill">Sample data</span>
+          </div>
+          <div class="summary-grid">
+            <div class="summary-item"><span>Venue</span><strong>Harbour House</strong><small>London · Main floor</small></div>
+            <div class="summary-item"><span>Service</span><strong>Evening · 16:00–00:30</strong><small>Peak 17:30–20:30</small></div>
+            <div class="summary-item"><span>Forecast</span><strong>120 covers</strong><small>Two larger bookings</small></div>
+            <div class="summary-item"><span>Priority</span><strong>Protect the peak handover</strong><small>Host and closing cover</small></div>
+          </div>
+          <details class="detail-panel">
+            <summary>Review shift details</summary>
+            <div class="detail-copy">
+              <span><strong>Event:</strong> Private dining booking at 19:00.</span>
+              <span><strong>Commercial focus:</strong> Featured pairing and guest return prompt.</span>
+              <span><strong>Manager note:</strong> Confirm the late host handover before doors open.</span>
+            </div>
+          </details>
+        </section>
+
+        <section class="screen" id="screen-2" data-screen="2" aria-labelledby="screen-2-title" hidden>
+          <div class="screen-head">
+            <div>
+              <p class="micro-label">Team &amp; coverage</p>
+              <h2 id="screen-2-title">Confirm action owners</h2>
+              <p class="screen-lead">Every critical area needs a named owner. Rotate the sample plan to see the brief update instantly.</p>
+            </div>
+            <span class="status-pill">1 role open</span>
+          </div>
+          <div class="owner-list" data-owner-list="editor"></div>
+          <button class="inline-action" type="button" id="rotate-owners">↻ Rotate sample owners</button>
+        </section>
+
+        <section class="screen" id="screen-3" data-screen="3" aria-labelledby="screen-3-title" hidden>
+          <div class="screen-head">
+            <div>
+              <p class="micro-label">Risks &amp; readiness</p>
+              <h2 id="screen-3-title">Three signals need attention</h2>
+              <p class="screen-lead">Pulse surfaces weak windows and missing ownership before they become service problems.</p>
+            </div>
+            <span class="status-pill">76% ready</span>
+          </div>
+          <div class="gap-list" data-gap-list="editor"></div>
+        </section>
+
+        <section class="screen" id="screen-4" data-screen="4" aria-labelledby="screen-4-title" hidden>
+          <div class="screen-head">
+            <div>
+              <p class="micro-label">Pulse Brief</p>
+              <h2 id="screen-4-title">Ready to brief</h2>
+              <p class="screen-lead">The manager output now holds the service context, named owners, watchouts and pre-service focus in one place.</p>
+            </div>
+            <span class="status-pill">Print locked</span>
+          </div>
+          <div class="completion-box">
+            <strong>Pulse Brief generated</strong>
+            <p>This public version is watermarked and print locked. Early Access includes venue setup and export-ready outputs.</p>
+          </div>
+          <a class="primary-link" href="https://yberium.github.io/venuebrief-landing/early-access.html">Request early access <span aria-hidden="true">→</span></a>
+        </section>
+      </div>
+
+      <aside class="preview-card" id="brief-preview" aria-labelledby="preview-title">
+        <button class="preview-toggle" type="button" id="preview-toggle" aria-expanded="false" aria-controls="preview-body">
+          <span><strong id="preview-title">Live Pulse Brief</strong><small>Updates with the sample plan</small></span>
+          <span class="preview-chevron" aria-hidden="true">⌄</span>
+        </button>
+        <div class="preview-body" id="preview-body">
+          <div class="pulse-paper">
+            <div class="paper-head">
+              <div class="paper-brand">
+                <svg viewBox="0 0 64 64" aria-hidden="true">
+                  <g fill="none" stroke="#93D91A" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M32 5 55 18v28L32 59 9 46V18Z" stroke-width="4"></path>
+                    <path d="M4 34h14l5-14 8 28 7-20 5 6h17" stroke-width="5"></path>
+                  </g>
+                </svg>
+                <div><span>Yberium Pulse</span><strong>Pulse Brief</strong></div>
+              </div>
+              <span class="paper-status">Needs attention</span>
+            </div>
+            <div class="paper-meta">
+              <div><span>Venue</span><strong>Harbour House</strong></div>
+              <div><span>Service</span><strong>Evening · 120</strong></div>
+              <div><span>Peak</span><strong>17:30–20:30</strong></div>
+            </div>
+            <section class="paper-section" aria-labelledby="paper-owners-title">
+              <h3 id="paper-owners-title">Action owners</h3>
+              <div class="owner-list" data-owner-list="preview"></div>
+            </section>
+            <section class="paper-section" aria-labelledby="paper-gaps-title">
+              <h3 id="paper-gaps-title">Readiness signals</h3>
+              <div class="gap-list" data-gap-list="preview"></div>
+            </section>
+            <section class="paper-section" aria-labelledby="paper-focus-title">
+              <h3 id="paper-focus-title">Pre-service focus</h3>
+              <div class="paper-focus">Confirm the host handover, private dining owner and closing cover before service.</div>
+            </section>
+            <span class="watermark">Public demo · Sample data · Print locked</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div class="action-bar" role="group" aria-label="Demo navigation">
+    <div class="action-status" aria-live="polite"><strong id="step-status">Step 1 of 4</strong><span id="step-description">Service context</span></div>
+    <div class="action-buttons">
+      <button class="action-button" type="button" id="back-button">Back</button>
+      <button class="action-button primary" type="button" id="next-button">Next</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const earlyAccessUrl = "https://yberium.github.io/venuebrief-landing/early-access.html";
+      const team = [
+        { name: "Leo", role: "Shift Lead", shift: "15:00–00:30" },
+        { name: "Amira", role: "Supervisor", shift: "16:00–00:30" },
+        { name: "Noah", role: "Team", shift: "14:00–22:00" },
+        { name: "Sofia", role: "Team", shift: "17:00–23:30" },
+        { name: "Ravi", role: "Team", shift: "17:00–00:30" }
+      ];
+      const assignments = ["MOD close", "Bar & Till", "Service Point", "Host / Entrance", "Floor Coverage"];
+      const gaps = [
+        { title: "Host handover required after 23:30", detail: "Name the late owner before doors open.", owner: "Leo", type: "warning" },
+        { title: "Private dining owner not confirmed", detail: "Assign coverage before the 17:30 peak.", owner: "Open", type: "warning" },
+        { title: "Closing cover is thin after 23:30", detail: "Review the close sequence with the MOD.", owner: "Leo", type: "warning" },
+        { title: "Core service positions covered", detail: "No payroll, HR or compliance decisions are made.", owner: "On track", type: "ok" }
+      ];
+      const stepDescriptions = ["Service context", "Action coverage", "Signals and gaps", "Manager output"];
+      let step = 1;
+      let rotation = 0;
+      let toastTimer;
+
+      const screens = [...document.querySelectorAll("[data-screen]")];
+      const stepButtons = [...document.querySelectorAll("[data-step]")];
+      const backButton = document.getElementById("back-button");
+      const nextButton = document.getElementById("next-button");
+      const preview = document.getElementById("brief-preview");
+      const previewToggle = document.getElementById("preview-toggle");
+      const stepStatus = document.getElementById("step-status");
+      const stepDescription = document.getElementById("step-description");
+      const toast = document.getElementById("toast");
+
+      function initials(name) {
+        return name.split(" ").map(part => part[0]).join("").slice(0, 2).toUpperCase();
+      }
+
+      function ownerRow(person, index) {
+        const assignment = assignments[(index + rotation) % assignments.length];
+        const row = document.createElement("div");
+        row.className = "owner-row";
+        row.innerHTML = `
+          <span class="owner-name"><span class="avatar" aria-hidden="true">${initials(person.name)}</span>${person.name}</span>
+          <span class="owner-role">${person.role}</span>
+          <span><strong class="owner-assignment">${assignment}</strong><small class="owner-shift">${person.shift}</small></span>`;
+        return row;
+      }
+
+      function gapRow(gap) {
+        const row = document.createElement("div");
+        row.className = `gap-item${gap.type === "ok" ? " ok" : ""}`;
+        row.innerHTML = `
+          <span class="gap-dot" aria-hidden="true"></span>
+          <span class="gap-copy"><strong>${gap.title}</strong><span>${gap.detail}</span></span>
+          <span class="gap-owner">${gap.owner}</span>`;
+        return row;
+      }
+
+      function renderOwners() {
+        document.querySelectorAll("[data-owner-list]").forEach(list => {
+          list.replaceChildren(...team.map(ownerRow));
+        });
+      }
+
+      function renderGaps() {
+        document.querySelectorAll("[data-gap-list]").forEach(list => {
+          list.replaceChildren(...gaps.map(gapRow));
+        });
+      }
+
+      function isCompactLayout() {
+        return window.matchMedia("(max-width: 980px)").matches;
+      }
+
+      function setPreview(open) {
+        preview.classList.toggle("open", open);
+        previewToggle.setAttribute("aria-expanded", String(open));
+      }
+
+      function renderStep({ focus = false } = {}) {
+        screens.forEach(screen => {
+          screen.hidden = Number(screen.dataset.screen) !== step;
+        });
+        stepButtons.forEach(button => {
+          const active = Number(button.dataset.step) === step;
+          if (active) button.setAttribute("aria-current", "step");
+          else button.removeAttribute("aria-current");
+        });
+        backButton.disabled = step === 1;
+        nextButton.textContent = step === 4 ? "Early Access" : "Next";
+        stepStatus.textContent = `Step ${step} of 4`;
+        stepDescription.textContent = stepDescriptions[step - 1];
+        if (step === 4 && isCompactLayout()) setPreview(true);
+        if (focus) document.getElementById(`screen-${step}`).focus({ preventScroll: true });
+      }
+
+      function goToStep(nextStep) {
+        step = Math.min(4, Math.max(1, nextStep));
+        renderStep();
+        document.querySelector(".step-nav").scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      function showToast(message) {
+        clearTimeout(toastTimer);
+        toast.textContent = message;
+        toast.classList.add("show");
+        toastTimer = setTimeout(() => toast.classList.remove("show"), 2800);
+      }
+
+      stepButtons.forEach(button => {
+        button.addEventListener("click", () => goToStep(Number(button.dataset.step)));
+      });
+
+      backButton.addEventListener("click", () => goToStep(step - 1));
+      nextButton.addEventListener("click", () => {
+        if (step < 4) goToStep(step + 1);
+        else window.location.href = earlyAccessUrl;
+      });
+
+      document.getElementById("rotate-owners").addEventListener("click", () => {
+        rotation = (rotation + 1) % assignments.length;
+        renderOwners();
+        showToast("Sample owners rotated. Pulse Brief updated.");
+      });
+
+      previewToggle.addEventListener("click", () => {
+        if (isCompactLayout()) setPreview(!preview.classList.contains("open"));
+      });
+
+      window.addEventListener("resize", () => {
+        if (!isCompactLayout()) setPreview(true);
+      });
+
+      window.addEventListener("keydown", event => {
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "p") {
+          event.preventDefault();
+          showToast("Printing is locked in the public demo.");
+        }
+      });
+
+      window.addEventListener("beforeprint", () => {
+        showToast("Printing is locked in the public demo.");
+      });
+
+      renderOwners();
+      renderGaps();
+      setPreview(!isCompactLayout());
+      renderStep();
+    })();
+  </script>
+</body>
+</html>
