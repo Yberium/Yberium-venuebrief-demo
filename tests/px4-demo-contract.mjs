@@ -7,6 +7,11 @@ const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const js = fs.readFileSync(new URL('../assets/product-parity-demo.js', import.meta.url), 'utf8');
 const css = fs.readFileSync(new URL('../assets/product-parity-demo.css', import.meta.url), 'utf8');
 const manifest = fs.readFileSync(new URL('../site.webmanifest', import.meta.url), 'utf8');
+const legacyRedirects = [
+  fs.readFileSync(new URL('../sr.html', import.meta.url), 'utf8'),
+  fs.readFileSync(new URL('../sr2.html', import.meta.url), 'utf8'),
+  fs.readFileSync(new URL('../v1-7-1.html', import.meta.url), 'utf8')
+];
 const active = `${html}\n${js}\n${manifest}`;
 
 for (const exact of [
@@ -30,6 +35,13 @@ assert.match(css, /prefers-reduced-motion/);
 assert.match(html, /assets\/yberium-pulse-fonts\.css/);
 assert.match(html, /id="post-demo" hidden/);
 assert.equal(JSON.parse(manifest).name, 'Yberium Interactive Demo');
+
+for (const redirect of legacyRedirects) {
+  assert.match(redirect, /<title>Yberium Demo<\/title>/);
+  assert.match(redirect, /noindex,follow/);
+  assert.match(redirect, /Yberium fixed-sample demo/);
+  assert.doesNotMatch(redirect, /Yberium Pulse|VenueBrief|Pulse Control/i);
+}
 
 const initial = demo.initialState();
 assert.equal(initial.selectedOwner, 'Mara Quinn');
