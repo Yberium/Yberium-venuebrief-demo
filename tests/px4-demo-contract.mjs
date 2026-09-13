@@ -18,7 +18,7 @@ for (const exact of [
   'Interactive demo · fixed synthetic sample · no live staff data · no real business change',
   'Design preview · no live ChatGPT/Yberium tool call',
   'Design preview · no live Hub persistence claimed',
-  'Discuss design-partner access'
+  'View design-partner access status'
 ]) assert.match(html, new RegExp(exact.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));
 
 assert.doesNotMatch(active, /Yberium Pulse|Pulse Control|Add rota|AI proposal|Request early access/i);
@@ -49,7 +49,8 @@ assert.throws(() => demo.selectOwner(initial, 'Leo'), /INVALID_SAMPLE_OWNER/);
 assert.deepEqual(demo.VALID_OWNERS, ['Mara Quinn','Eli Mercer']);
 assert.equal(demo.CANONICAL_OWNER, 'Mara Quinn');
 
-console.log('PX-4 Demo V2 recovery contract checks passed.');
-
-assert.match(html, /https:\/\/yberium\.com\/early-access\.html#pilot-form/);
+assert.match(html, /https:\/\/yberium\.com\/early-access\.html/);
+assert.doesNotMatch(html, /early-access\.html#pilot-form/);
 assert.doesNotMatch(html, /yberium\.github\.io\/venuebrief-landing/i);
+
+console.log('PX-4 Demo V2 recovery contract checks passed.');
