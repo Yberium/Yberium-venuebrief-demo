@@ -50,3 +50,6 @@ assert.deepEqual(demo.VALID_OWNERS, ['Mara Quinn','Eli Mercer']);
 assert.equal(demo.CANONICAL_OWNER, 'Mara Quinn');
 
 console.log('PX-4 Demo V2 recovery contract checks passed.');
+
+assert.match(html, /https:\/\/yberium\.com\/early-access\.html#pilot-form/);
+assert.doesNotMatch(html, /yberium\.github\.io\/venuebrief-landing/i);
