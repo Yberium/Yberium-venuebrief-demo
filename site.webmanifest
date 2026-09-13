@@ -1,28 +1,9 @@
 {
-  "id": "./",
-  "name": "Yberium Pulse Demo",
-  "short_name": "Pulse Demo",
-  "description": "Interactive sample-data shift readiness demo for Yberium Pulse.",
-  "start_url": "./?source=installed",
-  "scope": "./",
+  "name": "Yberium Interactive Demo",
+  "short_name": "Yberium Demo",
+  "description": "Fixed synthetic Yberium product demo.",
+  "start_url": "./",
   "display": "standalone",
-  "orientation": "any",
-  "background_color": "#F5F6F7",
-  "theme_color": "#171A1F",
-  "categories": ["business", "productivity"],
-  "icons": [
-    {
-      "src": "assets/yberium-pulse-mark.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Start demo",
-      "short_name": "Start",
-      "url": "./?source=shortcut"
-    }
-  ]
+  "background_color": "#F7F5F0",
+  "theme_color": "#F7F5F0"
 }
