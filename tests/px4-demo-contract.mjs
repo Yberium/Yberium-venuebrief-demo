@@ -22,7 +22,7 @@ for (const exact of [
 ]) assert.match(html, new RegExp(exact.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));
 
 assert.doesNotMatch(active, /Yberium Pulse|Pulse Control|Add rota|AI proposal|Request early access/i);
-assert.doesNotMatch(js, /fetch\s*\(|XMLHttpRequest|WebSocket|sendBeacon|supabase|method\s*:\s*['"]POST['"]/i);
+assert.doesNotMatch(js, /fetch\s*\(|XMLHttpRequest|WebSocket|sendBeacon|supabase|method\s*:\s*['\"]POST['\"]/i);
 assert.doesNotMatch(active, /Harbour House|Leo|Amira|Sofia|Ravi|Noah/i);
 assert.match(css, /2px solid #27766F/i);
 assert.match(css, /min-height:44px/i);
